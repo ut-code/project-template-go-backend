@@ -1,25 +1,25 @@
 {
-  "name": "project-template",
+  "name": "project-template-go-backend",
   "version": "1.0.0",
   "description": "",
   "scripts": {
     "setup": "npm run setup:env && npm run setup:install",
-    "setup:env": "cp backend/.env.example backend/.env && cp frontend/.env.example frontend/.env",
+    "setup:env": "cp backend/.env.sample backend/.env && cp frontend/.env.sample frontend/.env",
     "setup:install": "npm run setup:install:backend && npm run setup:install:frontend",
-    "setup:install:backend": "cd backend && npm install",
+    "setup:install:backend": "cd backend && go mod tidy",
     "setup:install:frontend": "cd frontend && npm install",
-    "backend:dev": "cd backend && npm run dev",
+    "backend:dev": "cd backend && go run .",
     "frontend:dev": "cd frontend && npm run dev"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ut-code/project-template.git"
+    "url": "git+https://github.com/ut-code/project-template-go-backend.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ut-code/project-template/issues"
+    "url": "https://github.com/ut-code/project-template-go-backend/issues"
   },
-  "homepage": "https://github.com/ut-code/project-template#readme"
+  "homepage": "https://github.com/ut-code/project-template-go-backend#readme"
 }
