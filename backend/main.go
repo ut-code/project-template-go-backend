@@ -16,7 +16,7 @@ import (
 type Message struct {
 	// フィールドはデフォルトでは `ID` という名前のフィールドがプライマリフィールドとして使われます。
 	// 参照: https://gorm.io/ja_JP/docs/conventions.html
-	ID      int    `gorm:"primaryKey"`
+	ID      int    `gorm:"primaryKey" json:"id"`
 	Content string `json:"content"`
 }
 
@@ -72,6 +72,10 @@ func main() {
 		err := json.NewDecoder(c.Request().Body).Decode(&body)
 		if err != nil {
 			return c.String(http.StatusBadRequest, "Invalid JSON")
+		}
+
+		if body.Content == "" {
+			return c.String(http.StatusBadRequest, "Empty content")
 		}
 
 		err = db.Create(&Message{

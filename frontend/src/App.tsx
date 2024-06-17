@@ -1,57 +1,69 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import "./App.css";
 
 // Vite はトランスパイル時に import.meta.env のプロパティを VITE_ から始まる環境変数に置換する
 // これを利用して本番環境と開発環境で Fetch API のリクエスト先を切り替えられる
 // 参考: https://ja.vitejs.dev/guide/env-and-mode.html
-const getMessagesApi = `${import.meta.env.VITE_API_ENDPOINT}/messages`;
-const postSendApi = `${import.meta.env.VITE_API_ENDPOINT}/send`;
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT!;
 
-type Message = { id: number; content: string };
+type Message = {
+  id: number;
+  content: string;
+};
 
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessageContent, setNewMessageContent] = useState("");
+  const [inputContent, setInputContent] = useState<string>("");
 
-  // コンポーネント読み込み時に処理を実行するには useEffect フックを使う
-  useEffect(() => {
-    const timerId = setInterval(async () => {
-      const response = await fetch(getMessagesApi);
-      setMessages(await response.json());
-    }, 1000);
+  async function updateMessages() {
+    const response = await fetch(API_ENDPOINT + "/messages");
+    const json = await response.json();
+    const messages = json as Message[];
+    setMessages(messages);
+  }
 
-    // useEffect フックに指定した関数の戻り値に指定した関数はコンポーネントの破棄時に実行される
-    return () => {
-      clearInterval(timerId);
-    };
-  }, []);
+  setInterval(updateMessages, 5 * 1000);
+  window.onload = updateMessages;
 
+  let i = 0;
+  // FIXME: the browser starts to lag after like 1 min.
+  // I'm not very familiar with JS, but isn't it GC'd?
   return (
     <>
-      <ul>
-        {messages.map((message) => (
-          <li key={message.id}>{message.content}</li>
-        ))}
-      </ul>
-      <input
-        value={newMessageContent}
-        onChange={(e) => {
-          setNewMessageContent(e.target.value);
-        }}
-      />
-      <button
-        type="button"
-        onClick={async () => {
-          await fetch(postSendApi, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: newMessageContent }),
-          });
-        }}
-      >
-        送信
-      </button>
+      <main>
+        <h1>TypeScript Frontend + Go Backend</h1>
+        <ul>
+          {messages.map((message: Message) => (
+            <li key={i++}>{message.content}</li>
+          ))}
+        </ul>
+        <input value={inputContent} placeholder="メッセージを入力" onChange={(e) => {
+          setInputContent(e.target.value);
+        }}/>
+        <button
+          type="submit"
+          disabled={inputContent === ""}
+          onClick={async () => {
+            const copy = inputContent;
+            setInputContent("");
+            await sendMessage(copy);
+            await updateMessages();
+          }}
+        >
+          送信
+        </button>
+      </main>
     </>
   );
+}
+
+async function sendMessage(content: string) {
+  await fetch(API_ENDPOINT + "/send", {
+    method: "post",
+    body: JSON.stringify({
+      content,
+    }),
+  });
 }
 
 export default App;
