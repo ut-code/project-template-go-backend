@@ -55,9 +55,7 @@ npm run lint && npm run type-check
 
 ## LICENSE
 
-このテンプレートの backend と frontend の部分は MIT ライセンスのもとで公開されています。
-
-ルートのスクリプトは @chvmvd に許可を取ってください。
+このテンプレートは MIT ライセンスのもとで公開されています。
 
 ## コントリビューション
 
