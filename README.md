@@ -5,23 +5,26 @@
 ## 使い方
 
 このテンプレートをつかうには、
+
 1. git clone します。
 2. .git を消します。
 3. git init します。
 4. GitHub でリポジトリを作り、 git remote add origin [URL] とします。
-6. README などを開発するアプリのものに書き換えます。
-7. 開発します。
-8. リリースします。
-9. goto 7;
+5. README などを開発するアプリのものに書き換えます。
+6. 開発します。
+7. リリースします。
+8. goto 6;
 
 ## 技術スタック
 
 Frontend:
+
 - React
 - TypeScript
 - Vite
 
 Backend:
+
 - Go
 - Echo
 - GORM
