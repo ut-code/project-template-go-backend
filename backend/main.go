@@ -63,9 +63,7 @@ func main() {
 	})
 
 	e.POST("/send", func(c echo.Context) error {
-		// JSON で送ろうとすると見ての通り面倒なことになる。
-		// Form だと数行でできるので、 Form で送るほうがいい。
-		// Form: https://echo.labstack.com/docs/binding
+		// Form 版: https://echo.labstack.com/docs/binding
 		var body struct {
 			Content string `json:"content"`
 		}
