@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 // Vite はトランスパイル時に import.meta.env のプロパティを VITE_ から始まる環境変数に置換する
@@ -22,12 +22,13 @@ function App() {
     setMessages(messages);
   }
 
-  setInterval(updateMessages, 5 * 1000);
+  useEffect(() => {
+    const id = setInterval(updateMessages, 5 * 1000);
+    return () => clearInterval(id);
+  }, []);
   window.onload = updateMessages;
 
   let i = 0;
-  // FIXME: the browser starts to lag after like 1 min.
-  // I'm not very familiar with JS, but isn't it GC'd?
   return (
     <>
       <main>
@@ -37,9 +38,13 @@ function App() {
             <li key={i++}>{message.content}</li>
           ))}
         </ul>
-        <input value={inputContent} placeholder="メッセージを入力" onChange={(e) => {
-          setInputContent(e.target.value);
-        }}/>
+        <input
+          value={inputContent}
+          placeholder="メッセージを入力"
+          onChange={(e) => {
+            setInputContent(e.target.value);
+          }}
+        />
         <button
           type="submit"
           disabled={inputContent === ""}
