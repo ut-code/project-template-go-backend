@@ -48,9 +48,6 @@ func main() {
 	// e.Use(middleware.Logger())
 	// e.Use(middleware.Recover())
 
-	// 開発環境では必要ないが、本番環境ではフロントを静的ファイルにビルドして提供するのが普通。
-	// e.Static("/", "./static")
-
 	e.GET("/messages", func(c echo.Context) error {
 		// get all messages from db
 		var messages []Message
