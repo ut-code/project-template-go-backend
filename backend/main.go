@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -31,19 +32,23 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.AutoMigrate(&Message{})
+	err = db.AutoMigrate(&Message{})
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	e := echo.New()
 
 	// 別ドメインから Fetch API を用いてリクエストを送信可能にするために必要
 	// WEB_ORIGIN に設定したドメインからのリクエストのみ許可する
 	// 参考: https://developer.mozilla.org/ja/docs/Web/HTTP/CORS
-	if web_origin := os.Getenv("WEB_ORIGIN"); web_origin != "" {
+	if cors_allow_origins := os.Getenv("CORS_ALLOW_ORIGIN"); cors_allow_origins != "" {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-			AllowOrigins:     []string{web_origin},
+			AllowOrigins:     strings.Split(cors_allow_origins, ","),
 			AllowCredentials: true, // これがないと cookie を送信することができない
 		}))
 	}
+
 	// ミドルウェアを使う。
 	// e.Use(middleware.Logger())
 	// e.Use(middleware.Recover())
